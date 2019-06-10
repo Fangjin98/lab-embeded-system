@@ -1,0 +1,65 @@
+C51 COMPILER V9.00   MAIN                                                                  06/10/2019 15:23:29 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN main.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c LARGE BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          /**********************  说   明  ********************************
+   2              
+   3          *************************************************************************/
+   4          #define ModBus_Interval_Min  4  //定义ModBus数据帧时间间隔（单位：mS）
+   5          
+   6          #include "STC15F2K60S2.H"
+   7          #include "ModBus.h"
+   8          #include "Inic.c"
+   9          #include "Isr.c"
+  10          #include "ModBus.c"
+  11          #include "Func.c"
+  12          #include "rtc.c"
+  13          #include "eeprom.c"
+  14          #include"Iap.c"
+  15          
+  16          
+  17          void main()
+  18          {       IO_Init();              //初始化LED灯
+  19   1              Timer0_Init();  //初始化定时器0：1mS时标
+  20   1              Uart1_Init();   //初始化串口1 
+  21   1              Uart2_Init();   //初始化串口2
+  22   1              IE_Init();              //初始化中断
+  23   1              IIC_Init();
+*** WARNING C206 IN LINE 23 OF MAIN.C: 'IIC_Init': missing function-prototype
+  24   1              InitADC();
+  25   1              if(DS1302Read(DS1302_second_read)&0X80)
+  26   1                       Init_DS1302();
+  27   1      
+  28   1              //SaveParameter(sec2_addr,&REG1,sizeof(REG1));
+  29   1              
+  30   1              Init_varible();
+  31   1              load_configuration();
+  32   1              
+  33   1              while(1)
+  34   1              {       if( flag_1mS )         {flag_1mS=0;          Func_1mS();  }
+  35   2                      if(     flag_20mS )                {flag_20mS=0;                 Func_20mS(); }
+  36   2                      if( flag_100mS )       {flag_100mS=0;        Func_100mS();}
+  37   2                      if (flag_1S!=0)    { flag_1S = 0;     Func_1S();} 
+  38   2                      if (flag_1Min!=0)  { flag_1Min = 0;   Func_1Min();} 
+  39   2                      if (flag_1Hour!=0) { flag_1Hour = 0;  Func_1Hour();}               
+  40   2              }               
+  41   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   5419    ----
+   CONSTANT SIZE    =    528    ----
+   XDATA SIZE       =   1204      45
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       4
+   IDATA SIZE       =   ----       5
+   BIT SIZE         =     18    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,53 @@
+C51 COMPILER V9.00   MODBUS                                                                06/02/2019 21:17:27 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE MODBUS
+OBJECT MODULE PLACED IN ModBus.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE ModBus.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          enum Uart_status Uart1_print(unsigned char *, unsigned char);
+*** ERROR C230 IN LINE 1 OF MODBUS.C: 'Uart_status': unknown struct/union/enum tag
+   2          
+   3          unsigned short ModBusCRC(unsigned char *ptr,unsigned char size)
+   4          {                                  //ptr 指向当前发送的字节 size 数据包的大小 
+   5   1          unsigned short i,j,tmp,CRC16; //,check_sum;
+   6   1              CRC16 = 0xffff; //CRC寄存器初始值
+   7   1              for(i=0;i<size;i++)
+   8   1              {       CRC16 = *ptr ^ CRC16;
+   9   2                  for(j=0;j<8;j++)
+  10   2                      {       tmp = CRC16 & 0x0001;//取出右移1位的移出位 
+  11   3                          CRC16 = CRC16>>1;
+  12   3                          if(tmp)     CRC16 = CRC16 ^ 0xa001;//异或多项式 
+  13   3                  }
+  14   2              ptr++;
+  15   2          }
+  16   1              return CRC16;   //结果为CRCH在前，CRCL在后（ModBus协议上需先传CRCL，再CRCH）
+  17   1      }
+  18          
+  19          void new_ModBus_frame(void)
+  20          {   char i;
+  21   1          flag_Uart2_Rx=BUSY;                                  //处理数据帧期间，禁止接收数据
+*** ERROR C202 IN LINE 21 OF MODBUS.C: 'flag_Uart2_Rx': undefined identifier
+  22   1          if((ModBusCRC((unsigned char *)&Uart2.Rx_Buf,Uart2.Rx_count)==0)) 
+  23   1            {  Uart1.Tx_Buf[0]=Head0_Uart1Rxd;
+  24   2                       Uart1.Tx_Buf[1]=Head1_Uart1Rxd;
+  25   2                }
+  26   1              else
+  27   1                {      Uart1.Tx_Buf[0]=Head0_Uart1Rxd+0x11;
+  28   2                       Uart1.Tx_Buf[1]=Head1_Uart1Rxd-0x11;
+  29   2                }
+  30   1          for (i=0;i<Uart2.Rx_count;i++)
+  31   1                   Uart1.Tx_Buf[2+i]=Uart2.Rx_Buf[i];
+  32   1      
+  33   1              Uart1_print((unsigned char *)&Uart1.Tx_Buf,Uart2.Rx_count+2);  //转发到Uart1
+  34   1      
+  35   1              Uart2.Rx_Pc=&Uart2.Rx_Buf;             //准备接收新ModBus数据帧
+  36   1          Uart2.Rx_count=0;
+  37   1          flag_Uart2_Rx=FREE;
+*** ERROR C202 IN LINE 37 OF MODBUS.C: 'flag_Uart2_Rx': undefined identifier
+  38   1      }
+  39          
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  3 ERROR(S)

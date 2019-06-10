@@ -1,0 +1,62 @@
+C51 COMPILER V9.00   ISR                                                                   06/02/2019 21:17:26 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE ISR
+OBJECT MODULE PLACED IN Isr.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Isr.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          void Timer0_isr(void) interrupt 1
+   2          {       flag_1mS = 1;
+*** ERROR C202 IN LINE 2 OF ISR.C: 'flag_1mS': undefined identifier
+   3   1              count_1mS++;
+*** ERROR C202 IN LINE 3 OF ISR.C: 'count_1mS': undefined identifier
+   4   1              if( count_1mS == 100 ) 
+*** ERROR C202 IN LINE 4 OF ISR.C: 'count_1mS': undefined identifier
+   5   1                   { count_1mS = 0;    
+*** ERROR C202 IN LINE 5 OF ISR.C: 'count_1mS': undefined identifier
+   6   2                         flag_100mS = 1;  
+*** ERROR C202 IN LINE 6 OF ISR.C: 'flag_100mS': undefined identifier
+   7   2               }                                                                                              
+   8   1      }
+   9          
+  10          void Uart1_isr(void) interrupt 4                   //串口中断函数   
+  11          {       if (TI) 
+*** ERROR C202 IN LINE 11 OF ISR.C: 'TI': undefined identifier
+  12   1              { TI = 0;                      // 如果上一个数据发完，TI = 0; 
+*** ERROR C202 IN LINE 12 OF ISR.C: 'TI': undefined identifier
+  13   2                        if (Uart1.Tx_count++ >= Uart1.Tx_Nmax)      // 如果数据包发送完毕        
+  14   2                                 flag_Uart1_Tx=FREE;
+*** ERROR C202 IN LINE 14 OF ISR.C: 'flag_Uart1_Tx': undefined identifier
+  15   2                        else SBUF=*Uart1.Tx_Pc++;    // 否则发送数据包下一字节                                                         
+*** ERROR C202 IN LINE 15 OF ISR.C: 'SBUF': undefined identifier
+  16   2              }       
+  17   1              if (RI) 
+*** ERROR C202 IN LINE 17 OF ISR.C: 'RI': undefined identifier
+  18   1                  { RI=0;                                                     
+*** ERROR C202 IN LINE 18 OF ISR.C: 'RI': undefined identifier
+  19   2                  }
+  20   1      }
+  21          
+  22          void Uart2_isr(void) interrupt 8
+  23          {   if(S2CON & 0x02)
+*** ERROR C202 IN LINE 23 OF ISR.C: 'S2CON': undefined identifier
+  24   1            { S2CON &= ~0x02;     //清发送中断标志位  
+*** ERROR C202 IN LINE 24 OF ISR.C: 'S2CON': undefined identifier
+  25   2                }
+  26   1              if(S2CON & 0x01)
+*** ERROR C202 IN LINE 26 OF ISR.C: 'S2CON': undefined identifier
+  27   1            { S2CON &= ~0x01;         //清接收中断标志位 
+*** ERROR C202 IN LINE 27 OF ISR.C: 'S2CON': undefined identifier
+  28   2                  if(flag_Uart2_Rx==FREE)                   //如果可以接收数据帧
+*** ERROR C202 IN LINE 28 OF ISR.C: 'flag_Uart2_Rx': undefined identifier
+  29   2                      {   *Uart2.Rx_Pc++=S2BUF;
+  30   3                              Uart2.Rx_count++;
+  31   3                              Uart2.Rx_interval_time=ModBus_Interval_Min;     
+  32   3                      }
+  33   2                }
+  34   1      }
+  35          
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  16 ERROR(S)

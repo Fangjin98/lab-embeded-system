@@ -1,0 +1,139 @@
+C51 COMPILER V9.00   EEPROM                                                                06/05/2019 11:14:38 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE EEPROM
+OBJECT MODULE PLACED IN eeprom.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE eeprom.c LARGE BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          void delay()            //延时4us
+   2          {
+   3   1              ;;      
+   4   1      }
+   5          
+   6          
+   7          void start()            //主机启动信号
+   8          {
+   9   1              SDA=1;
+*** ERROR C202 IN LINE 9 OF EEPROM.C: 'SDA': undefined identifier
+  10   1              delay();
+  11   1              SCL=1;
+*** ERROR C202 IN LINE 11 OF EEPROM.C: 'SCL': undefined identifier
+  12   1              delay();
+  13   1              SDA=0;
+*** ERROR C202 IN LINE 13 OF EEPROM.C: 'SDA': undefined identifier
+  14   1              delay();        
+  15   1      }
+  16          void stop()                     //停止信号
+  17          {
+  18   1              SDA=0;
+*** ERROR C202 IN LINE 18 OF EEPROM.C: 'SDA': undefined identifier
+  19   1              delay();
+  20   1              SCL=1;
+*** ERROR C202 IN LINE 20 OF EEPROM.C: 'SCL': undefined identifier
+  21   1              delay();
+  22   1              SDA=1;
+*** ERROR C202 IN LINE 22 OF EEPROM.C: 'SDA': undefined identifier
+  23   1              delay();
+  24   1      }
+  25          void respons()          //从机应答信号
+  26          {
+  27   1              uchar i=0;
+*** ERROR C202 IN LINE 27 OF EEPROM.C: 'uchar': undefined identifier
+*** ERROR C141 IN LINE 27 OF EEPROM.C: syntax error near 'i'
+  28   1              SCL=1;
+*** ERROR C202 IN LINE 28 OF EEPROM.C: 'SCL': undefined identifier
+  29   1              delay();
+  30   1              while(SDA==1&&(i<255))  //表示若在一段时间内没有收到从器件的应答则
+*** ERROR C202 IN LINE 30 OF EEPROM.C: 'SDA': undefined identifier
+  31   1                      i++;                            //主器件默认从期间已经收到数据而不再等待应答信号。 
+*** ERROR C202 IN LINE 31 OF EEPROM.C: 'i': undefined identifier
+  32   1              SCL=0;
+*** ERROR C202 IN LINE 32 OF EEPROM.C: 'SCL': undefined identifier
+  33   1              delay();
+  34   1      }
+  35          void writebyte(uchar date) //对24C16写一个字节数据
+*** ERROR C141 IN LINE 35 OF EEPROM.C: syntax error near 'date', expected ')'
+  36          {
+  37   1              uchar i,temp,tempbit;
+*** ERROR C141 IN LINE 37 OF EEPROM.C: syntax error near 'i'
+*** ERROR C202 IN LINE 37 OF EEPROM.C: 'i': undefined identifier
+  38   1              temp=date;
+*** ERROR C202 IN LINE 38 OF EEPROM.C: 'temp': undefined identifier
+  39   1              for(i=0;i<8;i++)
+C51 COMPILER V9.00   EEPROM                                                                06/05/2019 11:14:38 PAGE 2   
+
+*** ERROR C202 IN LINE 39 OF EEPROM.C: 'i': undefined identifier
+  40   1              {
+  41   2                      tempbit=(temp&0x80)>>7;
+*** ERROR C202 IN LINE 41 OF EEPROM.C: 'tempbit': undefined identifier
+  42   2                      temp=temp<<1;
+*** ERROR C202 IN LINE 42 OF EEPROM.C: 'temp': undefined identifier
+  43   2                      SCL=0;
+*** ERROR C202 IN LINE 43 OF EEPROM.C: 'SCL': undefined identifier
+  44   2                      delay();
+  45   2                      SDA=tempbit;
+*** ERROR C202 IN LINE 45 OF EEPROM.C: 'SDA': undefined identifier
+  46   2                      delay();
+  47   2                      SCL=1;
+*** ERROR C202 IN LINE 47 OF EEPROM.C: 'SCL': undefined identifier
+  48   2                      delay();
+  49   2              }
+  50   1              SCL=0;
+*** ERROR C202 IN LINE 50 OF EEPROM.C: 'SCL': undefined identifier
+  51   1              delay();
+  52   1              SDA=1;
+*** ERROR C202 IN LINE 52 OF EEPROM.C: 'SDA': undefined identifier
+  53   1              delay();        
+  54   1      }
+  55          uchar readbyte()                        //从24C16读一个字节数据
+*** ERROR C129 IN LINE 55 OF EEPROM.C: missing ';' before 'readbyte'
+  56          {
+  57                  uchar i,k;
+  58                  SCL=0;
+  59                  delay();
+  60                  SDA=1;
+  61                  delay();
+  62                  for(i=0;i<8;i++)
+  63                  {
+  64                          SCL=1;
+  65                          delay();
+  66                          k=(k<<1)|SDA;
+  67                          delay();
+  68                          SCL=0;
+  69                          delay();
+  70                  }
+  71                  delay();
+  72                  return k;       
+  73          }
+  74          void write_add(uchar dev_addr,uchar addr,uchar date)
+  75          {
+  76                  start();
+  77                  writebyte(dev_addr);                                                    
+  78                  respons();
+  79                  writebyte(addr);
+  80                  respons();
+  81                  writebyte(date);
+  82                  respons();
+  83                  stop();                                                 
+  84          }
+  85          uchar read_add(uchar dev_addr,uchar addr) //从24C16的addr地址，读一个字节数据
+  86          {
+  87                  uchar date;
+  88                  start();
+  89                  writebyte(dev_addr);
+  90                  respons();
+  91                  writebyte(addr);
+  92                  respons();      
+C51 COMPILER V9.00   EEPROM                                                                06/05/2019 11:14:38 PAGE 3   
+
+  93                  start();
+  94                  writebyte(dev_addr);
+  95                  respons();
+  96                  date=readbyte();
+  97                  stop();
+  98                  return date;
+  99          }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  25 ERROR(S)

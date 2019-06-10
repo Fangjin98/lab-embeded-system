@@ -1,0 +1,117 @@
+C51 COMPILER V9.00   FUNC                                                                  06/02/2019 21:17:26 PAGE 1   
+
+
+C51 COMPILER V9.00, COMPILATION OF MODULE FUNC
+OBJECT MODULE PLACED IN Func.OBJ
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE Func.c BROWSE DEBUG OBJECTEXTEND
+
+line level    source
+
+   1          void DispDrive(char Dis_min, char Dis_max) 
+   2          { char selData[]={0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f,0x40,0x00}; //  ÊýÂë¹ÜÏÔÊ¾ÒëÂë±í 
+   3   1                    /* ÐòºÅ:   0  1    2        3    4         5    6    7   8         9       10       11                */
+   4   1                    /* ÏÔÊ¾:   0  1    2    3    4     5    6    7   8     9    -   (ÎÞ)      */ 
+   5   1        static unsigned char Dis_flag;                        //¼ÇÂ¼ÏÔÊ¾Î»
+   6   1        P0 =0;                                                  //¹Ø±Õ¶ÎÑ¡£¬ÏûÓ°
+*** ERROR C202 IN LINE 6 OF FUNC.C: 'P0': undefined identifier
+   7   1        P2 = (P2 & 0xf0) | (Dis_flag & 0x0f);                   //Î»Ñ¡¿ØÖÆ:±£ÁôP2¸ß4Î»²»±ä£¬µÍ4Î»È¡Dis_flag
+*** ERROR C202 IN LINE 7 OF FUNC.C: 'P2': undefined identifier
+   8   1        if   (Dis_flag<9)
+   9   1          {if(Dis_flag == 8) P0 = disp[Dis_flag];                  //¶ÎÑ¡£ºLEDµÆÊ±
+*** ERROR C202 IN LINE 9 OF FUNC.C: 'P0': undefined identifier
+  10   2                      else           P0 = selData[disp[Dis_flag]];                     //¶ÎÑ¡£ºÊýÂë¹ÜÊ±
+*** ERROR C202 IN LINE 10 OF FUNC.C: 'P0': undefined identifier
+  11   2              }       
+  12   1        if( ++Dis_flag > Dis_max ) Dis_flag = Dis_min;
+  13   1      }
+  14          
+  15          void LED8_print(char d8,char d7,char d6,char d5,char d4,char d3,char d2,char d1,char d0)
+  16          {       disp[0]=d7;       //ÊýÂë¹Ü×î¸ßÎ»
+*** ERROR C202 IN LINE 16 OF FUNC.C: 'disp': undefined identifier
+  17   1              disp[1]=d6;
+*** ERROR C202 IN LINE 17 OF FUNC.C: 'disp': undefined identifier
+  18   1              disp[2]=d5;
+*** ERROR C202 IN LINE 18 OF FUNC.C: 'disp': undefined identifier
+  19   1              disp[3]=d4;
+*** ERROR C202 IN LINE 19 OF FUNC.C: 'disp': undefined identifier
+  20   1              disp[4]=d3;
+*** ERROR C202 IN LINE 20 OF FUNC.C: 'disp': undefined identifier
+  21   1              disp[5]=d2;
+*** ERROR C202 IN LINE 21 OF FUNC.C: 'disp': undefined identifier
+  22   1              disp[6]=d1;
+*** ERROR C202 IN LINE 22 OF FUNC.C: 'disp': undefined identifier
+  23   1              disp[7]=d0;
+*** ERROR C202 IN LINE 23 OF FUNC.C: 'disp': undefined identifier
+  24   1              disp[8]=d8;       //Á÷Ë®µÆ
+*** ERROR C202 IN LINE 24 OF FUNC.C: 'disp': undefined identifier
+  25   1      }
+  26          
+  27          void display(char d8,int a)     
+  28          {       idata unsigned char d5,d4,d3,d2,d1,d0;
+  29   1          if (a<0)
+  30   1                  {  a=-a;
+  31   2                     d0=a%10; a=a/10;
+  32   2                         if (a==0)  {d5=11;d4=11;d3=11;d2=11;d1=10;}
+  33   2                         else { d1=a%10; a=a/10;
+  34   3                                if(a==0) {d5=11;d4=11;d3=11;d2=10;}
+  35   3                                        else  {d2=a%10;  a=a/10;
+  36   4                                               if(a==0) {d5=11;d4=11;d3=10;}
+  37   4                                                       else {  d3=a%10; a=a/10;
+  38   5                                                               if(a==0) {d5=11;d4=10;}
+  39   5                                                                       else {d4=a; d5=10;}
+  40   5                                                            }
+  41   4                                                  }
+  42   3      
+C51 COMPILER V9.00   FUNC                                                                  06/02/2019 21:17:26 PAGE 2   
+
+  43   3                              } 
+  44   2                  }
+  45   1                 else
+  46   1                  {  d5=11;
+  47   2                         d0=a%10;     a=a/10;
+  48   2                     if (a==0)  {d4=11;d3=11;d2=11;d1=11;}
+  49   2                     else { d1=a%10;   a=a/10;
+  50   3                            if (a==0)  {d4=11;d3=11;d2=11;}
+  51   3                                    else  {d2=a%10;  a=a/10;
+  52   4                                           if(a==0) {d4=11;d3=11;}
+  53   4                                                   else  { d3=a%10; a=a/10;
+  54   5                                                               if (a==0) d4=11;
+  55   5                                                                       else d4=a;
+  56   5                                                                 }
+  57   4                                              }
+  58   3                              }               
+  59   2                  }
+  60   1              LED8_print(d8,11,11,d5,d4,d3,d2,d1,d0);
+  61   1      }
+  62          
+  63          enum Uart_status Uart1_print(unsigned char *pt, unsigned char num)       //·Ç×èÈû´®¿Ú·¢ËÍº¯Êý£¨ÓëUart1_isr()Åäº
+             -Ï£©
+*** ERROR C230 IN LINE 63 OF FUNC.C: 'Uart_status': unknown struct/union/enum tag
+  64          {       if (flag_Uart1_Tx==BUSY) return(BUSY);
+*** ERROR C202 IN LINE 64 OF FUNC.C: 'flag_Uart1_Tx': undefined identifier
+*** ERROR C202 IN LINE 64 OF FUNC.C: 'BUSY': undefined identifier
+  65   1          Uart1.Tx_Pc=pt;                //Ö¸¶¨·¢ËÍÊý¾ÝµÄÆðÊ¼Ö¸Õë
+  66   1              Uart1.Tx_Nmax=num;             //Ö¸¶¨·¢ËÍÊý¾ÝµÄ×Ö½ÚÊý£¬²»º¬Ð£ÑéºÍ×Ö½Ú
+  67   1              Uart1.Tx_count=0;                  //·¢ËÍ×Ö½Ú¼ÆÊýÇåÁã
+  68   1              flag_Uart1_Tx=BUSY;
+*** ERROR C202 IN LINE 68 OF FUNC.C: 'flag_Uart1_Tx': undefined identifier
+  69   1              TI = 1;                                    //Æô¶¯·¢ËÍ
+*** ERROR C202 IN LINE 69 OF FUNC.C: 'TI': undefined identifier
+  70   1              return(OK);
+*** ERROR C202 IN LINE 70 OF FUNC.C: 'OK': undefined identifier
+  71   1      }
+  72          
+  73          void Func_1mS(void)
+  74          {   display(Uart1.Tx_Buf[1]-0x11,Uart1.Tx_Buf[0]);            //¸üÐÂÊýÂë¹ÜÏÔÊ¾
+  75   1          DispDrive(Dis_B,Dis_E);                 //ÊýÂë¹ÜÉ¨Ãè             
+*** ERROR C202 IN LINE 75 OF FUNC.C: 'Dis_B': undefined identifier
+  76   1          if(Uart2.Rx_interval_time > 0)      //ModBusÐÂÊý¾ÝÖ¡ÅÐ¶Ï
+  77   1             if(--Uart2.Rx_interval_time == 0) new_ModBus_frame();
+  78   1      }
+  79          
+  80          void Func_100mS(void)
+  81          {       
+  82   1       
+  83   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  20 ERROR(S)
